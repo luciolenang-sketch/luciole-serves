@@ -1,0 +1,116 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "User profile with personal information and metadata",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Firebase Authentication UID of the user" },
+        "email": { "type": "string", "description": "Email address of the client user" },
+        "name": { "type": "string", "description": "Full name or corporate label" },
+        "phone": { "type": "string", "description": "Active WhatsApp or phone number" },
+        "address": { "type": "string", "description": "Client address/location" },
+        "status": { "type": "string", "description": "Profile active status" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Account registration timestamp" }
+      },
+      "required": ["uid", "email"]
+    },
+    "Project": {
+      "title": "Project",
+      "description": "Client project details and development progress tracking",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique identifier of the project" },
+        "userId": { "type": "string", "description": "UID of the owner profile" },
+        "title": { "type": "string", "description": "Project naming label" },
+        "type": { "type": "string", "description": "Type of service e.g. vitrine, ecommerce, mobile, design, audio" },
+        "cost": { "type": "number", "description": "Total price of the project in currency" },
+        "currency": { "type": "string", "description": "Display currency XAF or EUR" },
+        "status": { "type": "string", "enum": ["brief", "design", "development", "qa", "deployed"], "description": "Current status in development lifecycle" },
+        "progress": { "type": "number", "description": "Numerical progress value from 0 to 100" },
+        "paymentStatus": { "type": "string", "enum": ["pending", "issued", "paid"], "description": "Current status of financial invoices" },
+        "features": { "type": "array", "items": { "type": "string" }, "description": "List of core features/addons" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "userId", "title", "type", "cost", "currency", "status", "progress", "paymentStatus"]
+    },
+    "Invoice": {
+      "title": "Invoice",
+      "description": "Invoice statements and billing logs of the client projects",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique billing statement ID" },
+        "projectId": { "type": "string", "description": "Accompanying project identifier" },
+        "userId": { "type": "string", "description": "UID of the owner profile" },
+        "amount": { "type": "number", "description": "Numerical billable sum" },
+        "tax": { "type": "number", "description": "Calculated VAT tax value" },
+        "total": { "type": "number", "description": "Aggregated sum with taxes included" },
+        "currency": { "type": "string" },
+        "status": { "type": "string", "enum": ["unpaid", "paid"] },
+        "method": { "type": "string", "description": "Selected payment asset Orange, MTN, Visa, Mastercard" },
+        "transactionHash": { "type": "string", "description": "Blockchain/Gateway transaction code string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "paidAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "projectId", "userId", "amount", "tax", "total", "currency", "status"]
+    },
+    "Notification": {
+      "title": "Notification",
+      "description": "In-app notifications for milestones and team messages",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique notification ID" },
+        "userId": { "type": "string", "description": "UID of the user recipient" },
+        "title": { "type": "string", "description": "Short heading of the alert notification" },
+        "message": { "type": "string", "description": "Body message text inside the alert notification" },
+        "type": { "type": "string", "enum": ["milestone", "message"], "description": "Type of notification" },
+        "read": { "type": "boolean", "description": "Read status toggle" },
+        "createdAt": { "type": "string", "format": "date-time", "description": "Dispatch timestamp" }
+      },
+      "required": ["id", "userId", "title", "message", "type", "read", "createdAt"]
+    },
+    "ProjectRequest": {
+      "title": "ProjectRequest",
+      "description": "User requests for custom estimated plans or quotes submitted through the platform",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string", "description": "Unique identifier of the project request" },
+        "name": { "type": "string", "description": "Full name of the request contact person" },
+        "email": { "type": "string", "description": "Email address of the sender" },
+        "phone": { "type": "string", "description": "Sender phone contact details" },
+        "service": { "type": "string", "description": "Type of service or custom project requested" },
+        "message": { "type": "string", "description": "Details, notes, or special requirements from the client" },
+        "status": { "type": "string", "enum": ["pending", "reviewed", "accepted", "rejected", "archived"], "description": "Current state of the project request" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "userId": { "type": "string", "description": "UID of the user if logged in" },
+        "estimateBudget": { "type": "number", "description": "Estimated budget generated by the estimator" },
+        "estimateCurrency": { "type": "string", "description": "Display currency XAF or EUR" },
+        "estimateFeatures": { "type": "array", "items": { "type": "string" }, "description": "List of components selected in the estimator" }
+      },
+      "required": ["id", "name", "email", "phone", "service", "message", "status", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}/public": {
+      "schema": "UserProfile",
+      "description": "Accredited user profile"
+    },
+    "/projects/{projectId}": {
+      "schema": "Project",
+      "description": "Project records mapped by identity"
+    },
+    "/invoices/{invoiceId}": {
+      "schema": "Invoice",
+      "description": "Payment records and receipts"
+    },
+    "/notifications/{notificationId}": {
+      "schema": "Notification",
+      "description": "Logged alerts and inbox messages"
+    },
+    "/projectRequests/{requestId}": {
+      "schema": "ProjectRequest",
+      "description": "Consolidated project requests and estimation briefs from client inquiries"
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "name": "Luciole Services",
+  "description": "Solutions digitales et audiovisuelles sur-mesure - créations de sites web, applications mobiles, bases de données, voix off et spots publicitaires.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
