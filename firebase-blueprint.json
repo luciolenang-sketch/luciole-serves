@@ -89,6 +89,38 @@
         "estimateFeatures": { "type": "array", "items": { "type": "string" }, "description": "List of components selected in the estimator" }
       },
       "required": ["id", "name", "email", "phone", "service", "message", "status", "createdAt"]
+    },
+    "LiveChat": {
+      "title": "LiveChat",
+      "description": "Live chat session state for interactive support",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "visitorName": { "type": "string" },
+        "visitorEmail": { "type": "string" },
+        "language": { "type": "string" },
+        "status": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "lastMessageText": { "type": "string" },
+        "isUserTyping": { "type": "boolean" },
+        "isAdminTyping": { "type": "boolean" },
+        "unreadCountForAdmin": { "type": "number" },
+        "unreadCountForUser": { "type": "number" }
+      },
+      "required": ["id", "visitorName", "language", "status"]
+    },
+    "LiveChatMessage": {
+      "title": "LiveChatMessage",
+      "description": "Live chat messages within support sessions",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "sender": { "type": "string" },
+        "text": { "type": "string" },
+        "timestamp": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id", "sender", "text"]
     }
   },
   "firestore": {
@@ -111,6 +143,14 @@
     "/projectRequests/{requestId}": {
       "schema": "ProjectRequest",
       "description": "Consolidated project requests and estimation briefs from client inquiries"
+    },
+    "/liveChats/{chatId}": {
+      "schema": "LiveChat",
+      "description": "Live chat session state for support"
+    },
+    "/liveChats/{chatId}/messages/{messageId}": {
+      "schema": "LiveChatMessage",
+      "description": "Individual messages in live chats"
     }
   }
 }

@@ -3,7 +3,7 @@
     "providers": {
       "emailPassword": true,
       "googleSignIn": {
-        "oAuthBrandDisplayName": "luciole-services",
+        "oAuthBrandDisplayName": "home",
         "supportEmail": "support@luciole-serves.com"
       }
     }

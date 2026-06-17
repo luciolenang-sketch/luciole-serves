@@ -16,5 +16,11 @@ service cloud.firestore {
     match /projectRequests/{requestId} {
       allow read, write: if true;
     }
+    match /liveChats/{chatId} {
+      allow read, write: if true;
+    }
+    match /liveChats/{chatId}/messages/{messageId} {
+      allow read, write: if true;
+    }
   }
 }
