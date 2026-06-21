@@ -1,0 +1,896 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Luciole-services — Solutions Digitales & Audiovisuelles</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --navy:#1B3A4B;
+    --navy-dark:#0E2229;
+    --gold:#D4A017;
+    --gold-light:#F1C94A;
+    --bg:#F7F5F1;
+    --white:#FFFFFF;
+    --text:#2E3A40;
+    --muted:#6B7C85;
+    --radius:12px;
+    --shadow: 0 8px 24px rgba(27,58,75,0.08);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{font-family:'Inter',sans-serif;color:var(--text);background:var(--bg);line-height:1.6;overflow-x:hidden;}
+  h1,h2,h3,h4{font-family:'Poppins',sans-serif;color:var(--navy);}
+  a{text-decoration:none;color:inherit;}
+  img{max-width:100%;display:block;}
+  .container{max-width:1180px;margin:0 auto;padding:0 24px;}
+
+  /* HEADER */
+  header{
+    position:fixed;top:0;left:0;right:0;
+    background:rgba(255,255,255,0.92);
+    backdrop-filter:blur(8px);
+    z-index:1000;
+    box-shadow:0 2px 12px rgba(0,0,0,0.04);
+    transition:background .3s;
+  }
+  .navbar{display:flex;align-items:center;justify-content:space-between;padding:12px 24px;max-width:1180px;margin:0 auto;}
+  .navbar img{height:46px;}
+  nav ul{display:flex;gap:28px;list-style:none;}
+  nav ul li a{font-weight:600;font-size:15px;color:var(--navy);position:relative;padding:6px 0;transition:color .25s;}
+  nav ul li a::after{
+    content:'';position:absolute;bottom:0;left:0;width:0;height:2px;background:var(--gold);
+    transition:width .3s;
+  }
+  nav ul li a:hover{color:var(--gold);}
+  nav ul li a:hover::after{width:100%;}
+  .nav-cta{
+    background:var(--gold);color:var(--white);padding:10px 22px;border-radius:30px;
+    font-weight:700;font-size:14px;transition:transform .25s, box-shadow .25s;
+    position:relative; overflow:hidden;
+  }
+  .nav-cta::before{
+    content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;
+    background:linear-gradient(120deg, transparent, rgba(255,255,255,0.45), transparent);
+    transition:left .6s;
+  }
+  .nav-cta:hover::before{left:100%;}
+  .nav-cta:hover{transform:translateY(-2px);box-shadow:0 6px 16px rgba(212,160,23,0.4);}
+  .burger{display:none;flex-direction:column;gap:5px;cursor:pointer;}
+  .burger span{width:26px;height:3px;background:var(--navy);border-radius:2px;transition:.3s;}
+
+  /* HERO */
+  .hero{
+    position:relative;
+    min-height:100vh;
+    display:flex;align-items:center;
+    padding-top:90px;
+    background:linear-gradient(135deg, var(--navy) 0%, var(--navy-dark) 60%, #081318 100%);
+    color:var(--white);
+    overflow:hidden;
+  }
+  .hero::before{
+    content:'';position:absolute;inset:0;
+    background: radial-gradient(circle at 80% 20%, rgba(212,160,23,0.20) 0%, transparent 45%),
+                radial-gradient(circle at 15% 80%, rgba(212,160,23,0.12) 0%, transparent 40%);
+    animation: glow 8s ease-in-out infinite alternate;
+    pointer-events:none;
+  }
+  /* drifting particles */
+  .particles{position:absolute;inset:0;pointer-events:none;z-index:1;}
+  .particle{
+    position:absolute;border-radius:50%;background:var(--gold-light);opacity:.5;
+    animation:driftUp linear infinite;
+  }
+  @keyframes driftUp{
+    from{transform:translateY(0) translateX(0); opacity:0;}
+    10%{opacity:.6;}
+    90%{opacity:.4;}
+    to{transform:translateY(-110vh) translateX(40px); opacity:0;}
+  }
+  @keyframes glow{
+    from{opacity:.7;}
+    to{opacity:1;}
+  }
+  .hero-content{
+    position:relative;z-index:2;
+    display:grid;grid-template-columns:1.1fr 0.9fr;gap:50px;align-items:center;
+    width:100%;
+  }
+  .hero-text .eyebrow{
+    display:inline-block;color:var(--gold-light);font-weight:600;letter-spacing:2px;
+    font-size:13px;text-transform:uppercase;margin-bottom:18px;
+    opacity:0;animation:fadeUp .8s ease forwards .2s;
+  }
+  .hero-text h1{
+    font-size:clamp(34px,5vw,58px);font-weight:800;line-height:1.15;margin-bottom:20px;
+    opacity:0;animation:fadeUp .8s ease forwards .4s;
+  }
+  .hero-text h1 span{
+    color:var(--gold);
+    background:linear-gradient(90deg, var(--gold), var(--gold-light), var(--gold));
+    background-size:200% auto;
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+    animation:shine 4s linear infinite;
+  }
+  @keyframes shine{
+    to{background-position:200% center;}
+  }
+  .hero-text p{
+    font-size:18px;color:#cdd9df;max-width:520px;margin-bottom:32px;
+    opacity:0;animation:fadeUp .8s ease forwards .6s;
+  }
+  .hero-buttons{display:flex;gap:16px;flex-wrap:wrap;opacity:0;animation:fadeUp .8s ease forwards .8s;}
+  .btn-primary{
+    background:var(--gold);color:var(--navy-dark);font-weight:700;padding:15px 32px;border-radius:30px;
+    transition:transform .25s, box-shadow .25s;display:inline-flex;align-items:center;gap:8px;
+    position:relative;overflow:hidden;
+    box-shadow:0 0 0 0 rgba(212,160,23,0.6);
+    animation:pulseBtn 2.6s infinite;
+  }
+  @keyframes pulseBtn{
+    0%{box-shadow:0 0 0 0 rgba(212,160,23,0.5);}
+    70%{box-shadow:0 0 0 14px rgba(212,160,23,0);}
+    100%{box-shadow:0 0 0 0 rgba(212,160,23,0);}
+  }
+  .btn-primary:hover{transform:translateY(-3px) scale(1.03);box-shadow:0 10px 24px rgba(212,160,23,0.45);}
+  .btn-outline{
+    border:2px solid rgba(255,255,255,0.35);color:var(--white);font-weight:700;padding:13px 30px;border-radius:30px;
+    transition:.25s;
+  }
+  .btn-outline:hover{background:rgba(255,255,255,0.1);border-color:var(--gold);transform:translateY(-3px);}
+
+  @keyframes fadeUp{
+    from{opacity:0;transform:translateY(24px);}
+    to{opacity:1;transform:translateY(0);}
+  }
+
+  /* Hero visual: slideshow */
+  .hero-visual{
+    position:relative;height:480px;border-radius:18px;overflow:hidden;
+    box-shadow:0 25px 60px rgba(0,0,0,0.45);
+    opacity:0;animation:fadeUp 1s ease forwards 1s;
+    border:1px solid rgba(255,255,255,0.08);
+  }
+  .slide{
+    position:absolute;inset:0;opacity:0;
+    transition:opacity 1.4s ease-in-out;
+  }
+  .slide.active{opacity:1;}
+  .slide img{width:100%;height:100%;object-fit:cover;transform:scale(1.05);
+    animation:slowZoom 9s ease-in-out infinite alternate;}
+  @keyframes slowZoom{
+    from{transform:scale(1.0);}
+    to{transform:scale(1.12);}
+  }
+  .slide::after{
+    content:'';position:absolute;inset:0;
+    background:linear-gradient(180deg, rgba(14,34,41,0) 40%, rgba(14,34,41,0.85) 100%);
+  }
+  .slide-caption{
+    position:absolute;bottom:24px;left:24px;right:24px;z-index:3;
+    color:var(--white);
+  }
+  .slide-caption .tag{
+    display:inline-block;background:var(--gold);color:var(--navy-dark);font-weight:700;
+    font-size:12px;padding:5px 14px;border-radius:20px;margin-bottom:10px;letter-spacing:1px;
+  }
+  .slide-caption h4{color:var(--white);font-size:19px;margin:0;}
+  .slide-dots{
+    position:absolute;top:20px;right:20px;display:flex;gap:8px;z-index:3;
+  }
+  .slide-dot{width:10px;height:10px;border-radius:50%;background:rgba(255,255,255,0.35);cursor:pointer;transition:.3s;}
+  .slide-dot.active{background:var(--gold);width:28px;border-radius:6px;}
+
+  /* MARQUEE - annonces défilantes */
+  .marquee-wrap{
+    background:var(--gold);overflow:hidden;white-space:nowrap;padding:13px 0;
+    position:relative;z-index:5;
+  }
+  .marquee{
+    display:inline-flex;gap:60px;animation:scrollLeft 28s linear infinite;
+    font-weight:700;color:var(--navy-dark);font-size:14px;letter-spacing:0.5px;
+  }
+  .marquee span{display:inline-flex;align-items:center;gap:10px;}
+  .marquee span::before{content:"★";animation:spin 3s linear infinite;display:inline-block;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+  @keyframes scrollLeft{
+    from{transform:translateX(0);}
+    to{transform:translateX(-50%);}
+  }
+
+  /* SECTION GENERIC */
+  section{padding:90px 0;}
+  .section-head{text-align:center;max-width:680px;margin:0 auto 56px;}
+  .section-head .eyebrow{
+    color:var(--gold);font-weight:700;letter-spacing:2px;text-transform:uppercase;font-size:13px;
+  }
+  .section-head h2{font-size:clamp(28px,4vw,40px);margin:10px 0 14px;}
+  .section-head p{color:var(--muted);font-size:16px;}
+
+  /* fade-in-on-scroll utility */
+  .reveal{opacity:0;transform:translateY(34px);transition:opacity .7s ease, transform .7s ease;}
+  .reveal.visible{opacity:1;transform:translateY(0);}
+  .reveal-scale{opacity:0;transform:scale(.92);transition:opacity .7s ease, transform .7s ease;}
+  .reveal-scale.visible{opacity:1;transform:scale(1);}
+  .reveal-left{opacity:0;transform:translateX(-40px);transition:opacity .7s ease, transform .7s ease;}
+  .reveal-left.visible{opacity:1;transform:translateX(0);}
+  .reveal-right{opacity:0;transform:translateX(40px);transition:opacity .7s ease, transform .7s ease;}
+  .reveal-right.visible{opacity:1;transform:translateX(0);}
+
+  /* SERVICES GRID */
+  .services-grid{
+    display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:28px;
+  }
+  .service-card{
+    background:var(--white);border-radius:var(--radius);padding:32px 26px;box-shadow:var(--shadow);
+    transition:transform .35s, box-shadow .35s;
+    border:1px solid transparent;
+  }
+  .service-card:hover{
+    transform:translateY(-10px);box-shadow:0 20px 44px rgba(27,58,75,0.16);
+    border-color:rgba(212,160,23,0.35);
+  }
+  .service-icon{
+    width:58px;height:58px;border-radius:14px;background:linear-gradient(135deg,var(--gold-light),var(--gold));
+    display:flex;align-items:center;justify-content:center;font-size:27px;margin-bottom:18px;color:var(--navy-dark);
+    transition:transform .4s;
+  }
+  .service-card:hover .service-icon{transform:rotate(-8deg) scale(1.1);}
+  .service-card h3{font-size:19px;margin-bottom:10px;}
+  .service-card p{color:var(--muted);font-size:15px;}
+
+  /* SHOWCASE - aperçus apps & sites */
+  .showcase{background:var(--white);}
+  .showcase-tabs{display:flex;justify-content:center;gap:14px;margin-bottom:46px;flex-wrap:wrap;}
+  .tab-btn{
+    padding:11px 26px;border-radius:30px;border:2px solid var(--navy);font-weight:700;font-size:14px;
+    background:transparent;color:var(--navy);cursor:pointer;transition:.25s;
+  }
+  .tab-btn.active, .tab-btn:hover{background:var(--navy);color:var(--white);}
+  .tab-content{display:none;}
+  .tab-content.active{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:26px;
+    animation:fadeUp .6s ease;}
+  .preview-card{
+    border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);background:var(--bg);
+    transition:transform .35s, box-shadow .35s; position:relative;
+  }
+  .preview-card:hover{transform:translateY(-8px) scale(1.02); box-shadow:0 18px 40px rgba(27,58,75,0.18);}
+  .preview-card .img-wrap{overflow:hidden;height:220px;}
+  .preview-card img{width:100%;height:220px;object-fit:cover;transition:transform .6s;}
+  .preview-card:hover img{transform:scale(1.08);}
+  .preview-card .preview-info{padding:16px;}
+  .preview-card .preview-info h4{font-size:15px;margin-bottom:4px;}
+  .preview-card .preview-info p{font-size:13px;color:var(--muted);}
+
+  /* AUDIO/VIDEO + JINGLE BAND */
+  .av-section{
+    background:linear-gradient(135deg,var(--navy),var(--navy-dark));
+    color:var(--white);position:relative;overflow:hidden;
+  }
+  .av-grid{display:grid;grid-template-columns:1fr 1fr;gap:50px;align-items:center;}
+  .av-text .eyebrow{color:var(--gold-light);}
+  .av-text h2{color:var(--white);}
+  .av-text p{color:#cdd9df;margin:18px 0 28px;}
+  .av-list{list-style:none;display:flex;flex-direction:column;gap:12px;}
+  .av-list li{display:flex;align-items:center;gap:10px;font-weight:600; transition:.3s;}
+  .av-list li:hover{color:var(--gold-light); transform:translateX(6px);}
+  .av-list li::before{content:"🎙";font-size:18px;}
+  .av-image{border-radius:var(--radius);overflow:hidden;box-shadow:0 20px 50px rgba(0,0,0,0.4);}
+  .av-image img{transition:transform .6s;}
+  .av-image:hover img{transform:scale(1.06);}
+
+  /* ABOUT / FOUNDER */
+  .about-grid{display:grid;grid-template-columns:0.8fr 1.2fr;gap:50px;align-items:center;}
+  .about-img{border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);}
+  .about-img img{transition:transform .6s;}
+  .about-img:hover img{transform:scale(1.05);}
+  .about-text .eyebrow{color:var(--gold);font-weight:700;letter-spacing:2px;text-transform:uppercase;font-size:13px;}
+  .about-text h2{margin:10px 0 16px;}
+  .about-text p{color:var(--muted);margin-bottom:14px;}
+  .stats{display:flex;gap:36px;margin-top:30px;flex-wrap:wrap;}
+  .stat h3{font-size:32px;color:var(--gold);}
+  .stat p{font-size:13px;color:var(--muted);font-weight:600;}
+
+  /* PROCESS */
+  .process-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:28px;}
+  .process-step{text-align:center;padding:10px;}
+  .step-num{
+    width:62px;height:62px;border-radius:50%;background:var(--navy);color:var(--gold);
+    display:flex;align-items:center;justify-content:center;font-family:'Poppins',sans-serif;font-weight:800;font-size:20px;
+    margin:0 auto 18px; transition:.4s;
+  }
+  .process-step:hover .step-num{background:var(--gold);color:var(--navy-dark);transform:rotate(360deg);}
+  .process-step h4{font-size:17px;margin-bottom:8px;}
+  .process-step p{font-size:14px;color:var(--muted);}
+
+  /* TESTIMONIALS */
+  .testimonials{background:var(--white);}
+  .testimonial-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:26px;}
+  .testimonial-card{
+    background:var(--bg);border-radius:var(--radius);padding:30px;box-shadow:var(--shadow);
+    transition:transform .35s;
+  }
+  .testimonial-card:hover{transform:translateY(-6px);}
+  .testimonial-stars{color:var(--gold);font-size:16px;margin-bottom:12px;}
+  .testimonial-card p{color:var(--text);font-size:15px;margin-bottom:18px;}
+  .testimonial-author{display:flex;align-items:center;gap:12px;}
+  .testimonial-author img{width:46px;height:46px;border-radius:50%;object-fit:cover;}
+  .testimonial-author h5{font-size:14px;color:var(--navy);}
+  .testimonial-author span{font-size:12px;color:var(--muted);}
+
+  /* CTA BAND */
+  .cta-band{
+    background:linear-gradient(120deg, var(--gold), var(--gold-light));
+    text-align:center;color:var(--navy-dark);position:relative;overflow:hidden;
+  }
+  .cta-band h2{color:var(--navy-dark);margin-bottom:14px;}
+  .cta-band p{margin-bottom:28px;font-weight:500;}
+  .cta-band .btn-dark{
+    background:var(--navy-dark);color:var(--white);font-weight:700;padding:15px 36px;border-radius:30px;
+    display:inline-flex;align-items:center;gap:10px;transition:.3s;
+  }
+  .cta-band .btn-dark:hover{background:var(--navy);transform:translateY(-3px);}
+
+  /* CONTACT */
+  .contact-section{background:var(--white);}
+  .contact-grid{display:grid;grid-template-columns:1fr 1fr;gap:50px;}
+  .contact-info h2{margin-bottom:16px;}
+  .contact-info p{color:var(--muted);margin-bottom:28px;}
+  .contact-item{display:flex;align-items:center;gap:16px;margin-bottom:22px; transition:.3s;}
+  .contact-item:hover{transform:translateX(6px);}
+  .contact-item .icon{
+    width:48px;height:48px;border-radius:50%;background:var(--bg);display:flex;align-items:center;justify-content:center;
+    font-size:20px;color:var(--gold);flex-shrink:0; transition:.3s;
+  }
+  .contact-item:hover .icon{background:var(--gold);color:var(--white);}
+  .contact-item h4{font-size:15px;margin-bottom:2px;}
+  .contact-item p{margin:0;font-size:14px;color:var(--muted);}
+  .contact-form{background:var(--bg);border-radius:var(--radius);padding:36px;box-shadow:var(--shadow);}
+  .contact-form input, .contact-form textarea, .contact-form select{
+    width:100%;padding:13px 16px;border:1px solid #DCE3E7;border-radius:8px;margin-bottom:16px;
+    font-family:'Inter',sans-serif;font-size:14px;background:var(--white);transition:border .25s, box-shadow .25s;
+  }
+  .contact-form input:focus, .contact-form textarea:focus, .contact-form select:focus{
+    outline:none;border-color:var(--gold); box-shadow:0 0 0 3px rgba(212,160,23,0.15);
+  }
+  .contact-form button{
+    width:100%;padding:15px;border:none;border-radius:8px;background:var(--gold);color:var(--white);
+    font-weight:700;font-size:15px;cursor:pointer;transition:.25s;
+  }
+  .contact-form button:hover{background:var(--navy); transform:translateY(-2px);}
+
+  /* WHATSAPP FLOAT */
+  .whatsapp-float{
+    position:fixed;bottom:26px;right:26px;z-index:999;
+    width:62px;height:62px;background:#25D366;border-radius:50%;
+    display:flex;align-items:center;justify-content:center;color:#fff;font-size:28px;
+    box-shadow:0 8px 24px rgba(37,211,102,0.5);
+    animation:pulse 2.4s infinite;
+  }
+  @keyframes pulse{
+    0%{box-shadow:0 0 0 0 rgba(37,211,102,0.5);}
+    70%{box-shadow:0 0 0 16px rgba(37,211,102,0);}
+    100%{box-shadow:0 0 0 0 rgba(37,211,102,0);}
+  }
+
+  /* SCROLL TO TOP */
+  .scroll-top{
+    position:fixed;bottom:26px;right:98px;z-index:999;
+    width:48px;height:48px;background:var(--navy);color:var(--gold);border-radius:50%;
+    display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;
+    box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:.35s;
+  }
+  .scroll-top.show{opacity:1;pointer-events:auto;}
+  .scroll-top:hover{background:var(--gold);color:var(--navy-dark);}
+
+  /* FOOTER */
+  footer{background:var(--navy-dark);color:#A9BAC2;padding:60px 0 26px;}
+  .footer-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:40px;margin-bottom:40px;}
+  .footer-grid h4{color:var(--white);margin-bottom:18px;font-size:16px;}
+  .footer-grid ul{list-style:none;display:flex;flex-direction:column;gap:10px;}
+  .footer-grid ul li a{font-size:14px;transition:.25s;}
+  .footer-grid ul li a:hover{color:var(--gold);padding-left:4px;}
+  .footer-logo img{height:42px;margin-bottom:14px;filter:brightness(0) invert(1);}
+  .footer-bottom{
+    border-top:1px solid rgba(255,255,255,0.08);padding-top:22px;text-align:center;font-size:13px;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width:900px){
+    .hero-content, .av-grid, .about-grid, .contact-grid{grid-template-columns:1fr;}
+    .hero-visual{height:380px;margin-top:30px;}
+    nav{position:fixed;top:74px;left:0;right:0;background:var(--white);flex-direction:column;
+      padding:20px;transform:translateY(-150%);transition:transform .35s;box-shadow:0 8px 20px rgba(0,0,0,0.08);}
+    nav.open{transform:translateY(0);}
+    nav ul{flex-direction:column;gap:16px;}
+    .burger{display:flex;}
+    .about-img{order:-1;}
+    .scroll-top{right:88px;width:44px;height:44px;}
+  }
+  @media (prefers-reduced-motion: reduce){
+    *{animation:none !important; transition:none !important;}
+  }
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="navbar">
+    <a href="#accueil"><img src="images/logo.svg" alt="Luciole-services"></a>
+    <nav id="mainNav">
+      <ul>
+        <li><a href="#accueil">Accueil</a></li>
+        <li><a href="#services">Services</a></li>
+        <li><a href="#realisations">Réalisations</a></li>
+        <li><a href="#audiovisuel">Audio & Vidéo</a></li>
+        <li><a href="#apropos">À propos</a></li>
+        <li><a href="#contact">Contact</a></li>
+      </ul>
+    </nav>
+    <a href="#contact" class="nav-cta">Démarrer un projet</a>
+    <div class="burger" id="burger"><span></span><span></span><span></span></div>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero" id="accueil">
+  <div class="particles" id="particles"></div>
+  <div class="container hero-content">
+    <div class="hero-text">
+      <span class="eyebrow">Agence digitale & audiovisuelle</span>
+      <h1>Donnez vie à vos idées avec <span>Luciole-services</span></h1>
+      <p>Sites web, applications mobiles, bases de données, design graphique, production audio et vidéo : votre partenaire pour une présence professionnelle qui marque les esprits.</p>
+      <div class="hero-buttons">
+        <a href="#contact" class="btn-primary">Demander un devis →</a>
+        <a href="#services" class="btn-outline">Voir nos services</a>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="slide-dots" id="slideDots"></div>
+      <div class="slide active">
+        <img src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=900&q=80" alt="Femme africaine souriante au travail">
+        <div class="slide-caption"><span class="tag">Notre équipe</span><h4>Des sourires et de la passion à chaque projet</h4></div>
+      </div>
+      <div class="slide">
+        <img src="https://images.unsplash.com/photo-1573164713988-8665fc963095?w=900&q=80" alt="Développeur africain concentré sur son code">
+        <div class="slide-caption"><span class="tag">Développement</span><h4>Un code soigné pour des résultats fiables</h4></div>
+      </div>
+      <div class="slide">
+        <img src="https://images.unsplash.com/photo-1551650975-87deedd944c3?w=900&q=80" alt="Création de site web professionnel">
+        <div class="slide-caption"><span class="tag">Création web</span><h4>Des sites modernes, rapides et élégants</h4></div>
+      </div>
+      <div class="slide">
+        <img src="https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=900&q=80" alt="Studio audio professionnel">
+        <div class="slide-caption"><span class="tag">Studio audio</span><h4>Voix off, jingles et spots qui marquent</h4></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- MARQUEE -->
+<div class="marquee-wrap">
+  <div class="marquee">
+    <span>Création de sites web vitrines & e-commerce</span>
+    <span>Applications iOS & Android sur mesure</span>
+    <span>Gestion et conception de bases de données</span>
+    <span>Design graphique & identité visuelle</span>
+    <span>Spots publicitaires entreprise audio & vidéo</span>
+    <span>Voix off professionnelles</span>
+    <span>Jingles & habillages sonores</span>
+    <span>Maintenance & support technique</span>
+    <span>Création de sites web vitrines & e-commerce</span>
+    <span>Applications iOS & Android sur mesure</span>
+    <span>Gestion et conception de bases de données</span>
+    <span>Design graphique & identité visuelle</span>
+    <span>Spots publicitaires entreprise audio & vidéo</span>
+    <span>Voix off professionnelles</span>
+    <span>Jingles & habillages sonores</span>
+    <span>Maintenance & support technique</span>
+  </div>
+</div>
+
+<!-- SERVICES -->
+<section id="services">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Nos services</span>
+      <h2>Des solutions complètes pour votre entreprise</h2>
+      <p>De la conception digitale à la production audiovisuelle, Luciole-services accompagne votre croissance avec des prestations professionnelles et sur mesure.</p>
+    </div>
+    <div class="services-grid">
+      <div class="service-card reveal"><div class="service-icon">🌐</div>
+        <h3>Création de sites web</h3>
+        <p>Sites vitrines, e-commerce et plateformes sur mesure, responsives et optimisés pour le référencement.</p>
+      </div>
+      <div class="service-card reveal"><div class="service-icon">📱</div>
+        <h3>Applications iOS & Android</h3>
+        <p>Conception et développement d'applications mobiles natives ou hybrides, performantes et intuitives.</p>
+      </div>
+      <div class="service-card reveal"><div class="service-icon">🗄️</div>
+        <h3>Gestion de bases de données</h3>
+        <p>Conception, structuration, sécurisation et maintenance de vos bases de données d'entreprise.</p>
+      </div>
+      <div class="service-card reveal"><div class="service-icon">🎨</div>
+        <h3>Design graphique</h3>
+        <p>Logos, chartes graphiques, supports de communication et identité visuelle professionnelle.</p>
+      </div>
+      <div class="service-card reveal"><div class="service-icon">📢</div>
+        <h3>Spots publicitaires</h3>
+        <p>Conception de spots audio et vidéo percutants pour promouvoir votre entreprise et vos produits.</p>
+      </div>
+      <div class="service-card reveal"><div class="service-icon">🎬</div>
+        <h3>Production audio & vidéo</h3>
+        <p>Montage, mixage et réalisation de contenus audiovisuels professionnels pour tous supports.</p>
+      </div>
+      <div class="service-card reveal"><div class="service-icon">🎤</div>
+        <h3>Voix off professionnelle</h3>
+        <p>Enregistrements de voix off pour publicités, formations, documentaires et présentations.</p>
+      </div>
+      <div class="service-card reveal"><div class="service-icon">🎵</div>
+        <h3>Jingles & habillages sonores</h3>
+        <p>Création de jingles personnalisés pour renforcer l'identité sonore de votre marque.</p>
+      </div>
+      <div class="service-card reveal"><div class="service-icon">🛠️</div>
+        <h3>Maintenance & support</h3>
+        <p>Suivi technique, mises à jour et accompagnement continu pour tous vos outils digitaux.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- SHOWCASE / APERÇUS -->
+<section id="realisations" class="showcase">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Nos réalisations</span>
+      <h2>Un aperçu de notre travail</h2>
+      <p>Découvrez quelques exemples de sites web et d'applications mobiles que nous avons conçus pour nos clients.</p>
+    </div>
+    <div class="showcase-tabs reveal">
+      <button class="tab-btn active" data-tab="sites">Sites web</button>
+      <button class="tab-btn" data-tab="apps">Applications mobiles</button>
+    </div>
+
+    <div class="tab-content active" id="sites">
+      <div class="preview-card reveal-scale">
+        <div class="img-wrap"><img src="https://images.unsplash.com/photo-1467232004584-a241de8bcf5d?w=500&q=80" alt="Site web e-commerce"></div>
+        <div class="preview-info"><h4>Boutique en ligne</h4><p>Site e-commerce moderne et responsive</p></div>
+      </div>
+      <div class="preview-card reveal-scale">
+        <div class="img-wrap"><img src="https://images.unsplash.com/photo-1547658719-da2b51169166?w=500&q=80" alt="Site vitrine entreprise"></div>
+        <div class="preview-info"><h4>Site vitrine corporate</h4><p>Présentation professionnelle d'entreprise</p></div>
+      </div>
+      <div class="preview-card reveal-scale">
+        <div class="img-wrap"><img src="https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=500&q=80" alt="Tableau de bord"></div>
+        <div class="preview-info"><h4>Tableau de bord web</h4><p>Interface de gestion connectée à une base de données</p></div>
+      </div>
+    </div>
+
+    <div class="tab-content" id="apps">
+      <div class="preview-card reveal-scale">
+        <div class="img-wrap"><img src="https://images.unsplash.com/photo-1551650975-87deedd944c3?w=500&q=80" alt="Application mobile de gestion"></div>
+        <div class="preview-info"><h4>Application de gestion</h4><p>Suivi et gestion d'activité en temps réel</p></div>
+      </div>
+      <div class="preview-card reveal-scale">
+        <div class="img-wrap"><img src="https://images.unsplash.com/photo-1512941937669-90a1b58e7e9c?w=500&q=80" alt="Application mobile réservation"></div>
+        <div class="preview-info"><h4>Application de réservation</h4><p>Prise de rendez-vous et notifications</p></div>
+      </div>
+      <div class="preview-card reveal-scale">
+        <div class="img-wrap"><img src="https://images.unsplash.com/photo-1601972602288-3be527b4f18a?w=500&q=80" alt="Application mobile e-commerce"></div>
+        <div class="preview-info"><h4>App e-commerce mobile</h4><p>Achat en ligne simplifié sur iOS et Android</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- AUDIO / VIDEO -->
+<section id="audiovisuel" class="av-section">
+  <div class="container av-grid">
+    <div class="av-text reveal-left">
+      <span class="eyebrow">Studio audiovisuel</span>
+      <h2>Une identité sonore et visuelle qui marque</h2>
+      <p>Notre studio produit des contenus audio et vidéo de qualité professionnelle pour renforcer la présence de votre marque auprès de votre public.</p>
+      <ul class="av-list">
+        <li>Spots publicitaires audio et vidéo</li>
+        <li>Voix off professionnelles multilingues</li>
+        <li>Jingles et habillages sonores sur mesure</li>
+        <li>Montage et mixage audio/vidéo</li>
+      </ul>
+      <a href="#contact" class="btn-primary" style="margin-top:28px;">Demander une production</a>
+    </div>
+    <div class="av-image reveal-right">
+      <img src="https://images.unsplash.com/photo-1598488035139-bdbb2231ce04?w=700&q=80" alt="Studio d'enregistrement audio professionnel">
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section id="apropos">
+  <div class="container about-grid">
+    <div class="about-img reveal-left">
+      <img src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=600&q=80" alt="Équipe Luciole-services au travail">
+    </div>
+    <div class="about-text reveal-right">
+      <span class="eyebrow">À propos de Luciole-services</span>
+      <h2>Une équipe passionnée au service de votre réussite</h2>
+      <p>Luciole-services est une agence spécialisée dans la création digitale et la production audiovisuelle. Nous accompagnons les entreprises, indépendants et institutions dans la réalisation de projets web, mobiles et multimédias adaptés à leurs besoins.</p>
+      <p>Notre objectif : vous offrir des solutions fiables, modernes et accessibles, avec un accompagnement personnalisé à chaque étape de votre projet.</p>
+      <div class="stats">
+        <div class="stat"><h3 class="counter" data-target="50">0</h3><p>Projets réalisés</p></div>
+        <div class="stat"><h3 class="counter" data-target="30">0</h3><p>Clients satisfaits</p></div>
+        <div class="stat"><h3 class="counter" data-target="5">0</h3><p>Domaines d'expertise</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROCESS -->
+<section style="background:var(--white);">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Notre méthode</span>
+      <h2>Comment se déroule un projet</h2>
+      <p>Un processus clair et structuré pour transformer votre idée en réalité digitale.</p>
+    </div>
+    <div class="process-grid">
+      <div class="process-step reveal">
+        <div class="step-num">1</div>
+        <h4>Échange & analyse</h4>
+        <p>Nous écoutons vos besoins et définissons les objectifs de votre projet.</p>
+      </div>
+      <div class="process-step reveal">
+        <div class="step-num">2</div>
+        <h4>Conception</h4>
+        <p>Création des maquettes, structures et premiers visuels du projet.</p>
+      </div>
+      <div class="process-step reveal">
+        <div class="step-num">3</div>
+        <h4>Réalisation</h4>
+        <p>Développement, production et intégration des éléments validés.</p>
+      </div>
+      <div class="process-step reveal">
+        <div class="step-num">4</div>
+        <h4>Livraison & suivi</h4>
+        <p>Mise en ligne, formation et accompagnement après livraison.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS -->
+<section class="testimonials">
+  <div class="container">
+    <div class="section-head reveal">
+      <span class="eyebrow">Témoignages</span>
+      <h2>Ce que disent nos clients</h2>
+      <p>La satisfaction de nos clients est notre meilleure publicité.</p>
+    </div>
+    <div class="testimonial-grid">
+      <div class="testimonial-card reveal">
+        <div class="testimonial-stars">★★★★★</div>
+        <p>"Une équipe à l'écoute qui a transformé notre idée en une application fluide et agréable à utiliser. Très satisfait du résultat !"</p>
+        <div class="testimonial-author">
+          <img src="https://images.unsplash.com/photo-1531123897727-8f129e1688ce?w=100&q=80" alt="Client satisfait">
+          <div><h5>Aïcha N.</h5><span>Entrepreneure, Douala</span></div>
+        </div>
+      </div>
+      <div class="testimonial-card reveal">
+        <div class="testimonial-stars">★★★★★</div>
+        <p>"Notre site web a complètement changé l'image de notre entreprise. Professionnel, rapide et toujours disponible pour répondre."</p>
+        <div class="testimonial-author">
+          <img src="https://images.unsplash.com/photo-1573164713988-8665fc963095?w=100&q=80" alt="Client satisfait">
+          <div><h5>Junior K.</h5><span>Directeur commercial</span></div>
+        </div>
+      </div>
+      <div class="testimonial-card reveal">
+        <div class="testimonial-stars">★★★★★</div>
+        <p>"Le jingle créé pour notre marque est parfait, il colle exactement à notre identité. Merci pour votre professionnalisme."</p>
+        <div class="testimonial-author">
+          <img src="https://images.unsplash.com/photo-1607252650355-f7fd0460ccdb?w=100&q=80" alt="Client satisfait">
+          <div><h5>Sandrine M.</h5><span>Responsable marketing</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA BAND -->
+<section class="cta-band">
+  <div class="container reveal-scale">
+    <h2>Prêt à donner vie à votre projet ?</h2>
+    <p>Contactez Luciole-services dès aujourd'hui et obtenez un devis gratuit en moins de 24h.</p>
+    <a href="#contact" class="btn-dark">Contactez-nous maintenant →</a>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact" class="contact-section">
+  <div class="container contact-grid">
+    <div class="contact-info reveal-left">
+      <span class="eyebrow" style="color:var(--gold);font-weight:700;letter-spacing:2px;text-transform:uppercase;font-size:13px;">Contact</span>
+      <h2>Discutons de votre projet</h2>
+      <p>Contactez-nous dès aujourd'hui pour un devis gratuit et personnalisé. Notre équipe vous répond rapidement.</p>
+      <div class="contact-item">
+        <div class="icon">📞</div>
+        <div><h4>Téléphone / WhatsApp</h4><p>+237 699 95 80 89</p></div>
+      </div>
+      <div class="contact-item">
+        <div class="icon">✉️</div>
+        <div><h4>Email</h4><p>luciole@services.com</p></div>
+      </div>
+      <div class="contact-item">
+        <div class="icon">📍</div>
+        <div><h4>Localisation</h4><p>Douala, Cameroun</p></div>
+      </div>
+    </div>
+    <form class="contact-form reveal-right" id="contactForm">
+      <input type="text" placeholder="Votre nom complet" required>
+      <input type="tel" placeholder="Votre numéro de téléphone" required>
+      <select required>
+        <option value="">Choisissez un service</option>
+        <option>Création de site web</option>
+        <option>Application iOS / Android</option>
+        <option>Gestion de base de données</option>
+        <option>Design graphique</option>
+        <option>Spot publicitaire / audiovisuel</option>
+        <option>Voix off</option>
+        <option>Jingle</option>
+        <option>Autre</option>
+      </select>
+      <textarea rows="4" placeholder="Décrivez votre projet" required></textarea>
+      <button type="submit">Envoyer la demande</button>
+    </form>
+  </div>
+</section>
+
+<a href="https://wa.me/237699958089" class="whatsapp-float" target="_blank" aria-label="Contacter sur WhatsApp">💬</a>
+<div class="scroll-top" id="scrollTop" aria-label="Retour en haut">↑</div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="container">
+    <div class="footer-grid">
+      <div>
+        <div class="footer-logo"><img src="images/logo.svg" alt="Luciole-services"></div>
+        <p style="font-size:14px;">Votre partenaire digital pour la création web, mobile et audiovisuelle.</p>
+      </div>
+      <div>
+        <h4>Services</h4>
+        <ul>
+          <li><a href="#services">Sites web</a></li>
+          <li><a href="#services">Applications mobiles</a></li>
+          <li><a href="#services">Bases de données</a></li>
+          <li><a href="#audiovisuel">Audio & vidéo</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Liens</h4>
+        <ul>
+          <li><a href="#accueil">Accueil</a></li>
+          <li><a href="#realisations">Réalisations</a></li>
+          <li><a href="#apropos">À propos</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Contact</h4>
+        <ul>
+          <li>+237 699 95 80 89</li>
+          <li>luciole@services.com</li>
+          <li>Douala, Cameroun</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      © 2026 Luciole-services. Tous droits réservés.
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Burger menu
+  const burger = document.getElementById('burger');
+  const nav = document.getElementById('mainNav');
+  burger.addEventListener('click', () => nav.classList.toggle('open'));
+  document.querySelectorAll('#mainNav a').forEach(a => a.addEventListener('click', () => nav.classList.remove('open')));
+
+  // Tabs
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.tab).classList.add('active');
+    });
+  });
+
+  // Scroll reveal
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if(entry.isIntersecting){
+        setTimeout(()=> entry.target.classList.add('visible'), i*70);
+        observer.unobserve(entry.target);
+      }
+    });
+  }, {threshold:0.12});
+  document.querySelectorAll('.reveal, .reveal-scale, .reveal-left, .reveal-right').forEach(c => observer.observe(c));
+
+  // Counters
+  const counters = document.querySelectorAll('.counter');
+  const counterObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if(entry.isIntersecting){
+        const el = entry.target;
+        const target = +el.dataset.target;
+        let cur = 0;
+        const step = Math.max(1, Math.ceil(target/40));
+        const tick = () => {
+          cur += step;
+          if(cur >= target){ el.textContent = target + "+"; return; }
+          el.textContent = cur;
+          requestAnimationFrame(tick);
+        };
+        tick();
+        counterObserver.unobserve(el);
+      }
+    });
+  }, {threshold:0.4});
+  counters.forEach(c => counterObserver.observe(c));
+
+  // Hero slideshow
+  const slides = document.querySelectorAll('.slide');
+  const dotsWrap = document.getElementById('slideDots');
+  slides.forEach((_, i) => {
+    const dot = document.createElement('div');
+    dot.className = 'slide-dot' + (i===0 ? ' active' : '');
+    dot.addEventListener('click', () => showSlide(i));
+    dotsWrap.appendChild(dot);
+  });
+  const dots = document.querySelectorAll('.slide-dot');
+  let current = 0;
+  function showSlide(i){
+    slides[current].classList.remove('active');
+    dots[current].classList.remove('active');
+    current = i;
+    slides[current].classList.add('active');
+    dots[current].classList.add('active');
+  }
+  setInterval(() => {
+    showSlide((current + 1) % slides.length);
+  }, 4500);
+
+  // Floating particles
+  const particlesWrap = document.getElementById('particles');
+  for(let i=0;i<22;i++){
+    const p = document.createElement('div');
+    p.className = 'particle';
+    const size = Math.random()*5 + 2;
+    p.style.width = size+'px';
+    p.style.height = size+'px';
+    p.style.left = Math.random()*100 + '%';
+    p.style.bottom = '-20px';
+    p.style.animationDuration = (Math.random()*10 + 8) + 's';
+    p.style.animationDelay = (Math.random()*10) + 's';
+    particlesWrap.appendChild(p);
+  }
+
+  // Scroll to top button
+  const scrollTopBtn = document.getElementById('scrollTop');
+  window.addEventListener('scroll', () => {
+    scrollTopBtn.classList.toggle('show', window.scrollY > 400);
+  });
+  scrollTopBtn.addEventListener('click', () => window.scrollTo({top:0, behavior:'smooth'}));
+
+  // Contact form
+  document.getElementById('contactForm').addEventListener('submit', function(e){
+    e.preventDefault();
+    alert("Merci pour votre message ! Nous vous recontacterons rapidement.\nVous pouvez aussi nous écrire directement sur WhatsApp au +237 699 95 80 89 ou par email à luciole@services.com.");
+    this.reset();
+  });
+</script>
+</body>
+</html>
