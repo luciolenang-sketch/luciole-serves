@@ -6,6 +6,7 @@ import fs from "fs";
 import { initializeApp } from "firebase-admin/app";
 import { getFirestore } from "firebase-admin/firestore";
 import { getAuth } from "firebase-admin/auth";
+import { GoogleGenAI } from "@google/genai";
 
 dotenv.config();
 
@@ -221,6 +222,71 @@ app.delete("/api/project-requests/:requestId", checkAdmin, async (req, res) => {
   } catch (error: any) {
     console.error("[Backend Firestore SDK] Error deleting projectRequest:", error);
     res.status(500).json({ success: false, error: error.message || "Error deleting from database" });
+  }
+});
+
+// Lazy initialization of Gemini client to prevent crashes if key is initially absent
+let geminiClient: GoogleGenAI | null = null;
+function getGemini(): GoogleGenAI {
+  if (!geminiClient) {
+    const key = process.env.GEMINI_API_KEY;
+    if (!key) {
+      throw new Error("GEMINI_API_KEY environment variable is required");
+    }
+    geminiClient = new GoogleGenAI({
+      apiKey: key,
+      httpOptions: {
+        headers: {
+          "User-Agent": "aistudio-build",
+        }
+      }
+    });
+  }
+  return geminiClient;
+}
+
+// AI Assistant chat endpoint
+app.post("/api/chat", async (req, res) => {
+  try {
+    const { messages, language } = req.body;
+    if (!messages || !Array.isArray(messages)) {
+      return res.status(400).json({ success: false, error: "Messages array is required." });
+    }
+
+    const ai = getGemini();
+
+    // Map frontend messages to Gemini API format
+    const contents = messages
+      .filter((m: any) => m && m.text && m.sender)
+      .map((m: any) => ({
+        role: m.sender === "user" ? "user" : "model",
+        parts: [{ text: m.text }]
+      }));
+
+    if (contents.length === 0) {
+      return res.status(400).json({ success: false, error: "No valid messages found." });
+    }
+
+    const systemInstruction = language === "fr"
+      ? "Tu es Manuelle, l'assistante IA dévouée et de confiance chez Luciole Services (https://luciole.services). Luciole Services est un studio d'ingénierie numérique et de création haut de gamme basé au Cameroun (Afrique Centrale), spécialisé dans 3 domaines clés :\n1. Ingénierie Web & Digitale (sites internet haut de gamme sous React/Next.js, applications sur-mesure résilientes).\n2. Applications Mobiles Innovantes (développement cross-platform fluide sous React Native).\n3. Vocal & Audio Studio (conception de jingles radio/télé, voix-off professionnelles pour publicités, documentaires, répondeurs téléphoniques, etc.).\n\nTon ton doit être extrêmement professionnel, chaleureux, créatif, poli et engageant. Présente-toi élégamment et guide l'interlocuteur pour identifier ses besoins et lui proposer l'une de nos solutions ou notre simulateur de budget intégré. Rappelle-lui que l'un de nos conseillers humains prendra le relais si nécessaire. Sois concise mais percutante."
+      : "You are Manuelle, the dedicated and trustworthy AI assistant at Luciole Services (https://luciole.services). Luciole Services is a high-end digital engineering and creation studio based in Cameroon (Central Africa), specializing in 3 key premium domains:\n1. Web & Digital Software Engineering (premium web architectures with React/Next.js and resilient backend systems).\n2. Innovative Mobile Apps (stellar cross-platform development via React Native).\n3. Vocal & Audio Studio (expertly handcrafted voiceovers, dynamic commercial jingles, sound design, IVRs, etc.).\n\nYour tone of voice should be exceptionally professional, warm, creative, polite, and engaging. Introduce yourself beautifully, help the caller/visitor pinpoint their requirements, and orient them to our solutions or budget estimator. Reassure them that our physical expert team can step in immediately if needed. Keep answers concise but powerful.";
+
+    const response = await ai.models.generateContent({
+      model: "gemini-3.5-flash",
+      contents,
+      config: {
+        systemInstruction,
+        temperature: 0.7,
+      },
+    });
+
+    res.json({ success: true, text: response.text });
+  } catch (error: any) {
+    console.error("[Gemini API Error] Failed in /api/chat:", error);
+    res.status(500).json({
+      success: false,
+      error: error.message || "An error occurred while generating the assistant reply."
+    });
   }
 });
 

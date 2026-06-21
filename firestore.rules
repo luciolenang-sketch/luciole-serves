@@ -1,24 +1,63 @@
 rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
+
+    // Global helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isAdmin() {
+      return isSignedIn() && (
+        request.auth.token.email == "luciolenang@gmail.com" && 
+        request.auth.token.email_verified == true
+      );
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    // 1. Users profiles
     match /users/{userId} {
-      allow read, write: if true;
+      allow read: if isOwner(userId) || isAdmin();
+      allow write: if isOwner(userId) || isAdmin();
     }
+
+    // 2. Projects
     match /projects/{projectId} {
-      allow read, write: if true;
+      allow read: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
+      allow create: if isAdmin() || (isSignedIn() && request.resource.data.userId == request.auth.uid);
+      allow update: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid && request.resource.data.userId == request.auth.uid);
+      allow delete: if isAdmin();
     }
+
+    // 3. Invoices
     match /invoices/{invoiceId} {
-      allow read, write: if true;
+      allow read: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
+      allow write: if isAdmin();
     }
+
+    // 4. Notifications
     match /notifications/{notificationId} {
-      allow read, write: if true;
+      allow read: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
+      allow create, delete: if isAdmin();
+      allow update: if isAdmin() || (isSignedIn() && resource.data.userId == request.auth.uid);
     }
+
+    // 5. Project Requests
     match /projectRequests/{requestId} {
-      allow read, write: if true;
+      allow read: if isAdmin();
+      allow create: if true; // anyone can submit an inquiry/project request
+      allow update, delete: if isAdmin();
     }
+
+    // 6. Live Chats - can be initiated by anyone
     match /liveChats/{chatId} {
       allow read, write: if true;
     }
+
+    // 7. Live Chat Messages
     match /liveChats/{chatId}/messages/{messageId} {
       allow read, write: if true;
     }

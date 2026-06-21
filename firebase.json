@@ -1,11 +1,6 @@
 {
-  "auth": {
-    "providers": {
-      "emailPassword": true,
-      "googleSignIn": {
-        "oAuthBrandDisplayName": "home",
-        "supportEmail": "support@luciole-serves.com"
-      }
-    }
+  "firestore": {
+    "database": "ai-studio-bb9d9e38-fa8b-44a6-9acf-9890e3bc3f85",
+    "rules": "firestore.rules"
   }
 }
